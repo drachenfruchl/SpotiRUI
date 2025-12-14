@@ -1,45 +1,31 @@
 # Spotify RUI Display
 
-Displays your current played song and other features such as **artists, album, queue information and *eventally* lyrics** via an ingame RUI element.  
+Displays information about your current played spotify song via an ingame RUI element.
 
-## TODOs
+![Demo GIF](https://i.imgur.com/z9FWksb.gif)
 
-Planning to go through these sorted by priority.  
-First TODO is getting the RUI element set up for further testing.
+## Setup
 
-### Python
+- Create an app on *https://developer.spotify.com/dashboard*
+- Run 'RUNME.bat'
+- Enter your `Client ID` and `Client secret`, which you receive from the dashboard of your recently created app
+- Authorize the app (You might have to login to your account first)
+- Enter the full file path to your save_data folder  
+e.g: `C:/Program Files (x86)/Steam/steamapps/common/Titanfall2/R2Northstar/save_data`
+- You should now be ready to launch the game!
 
----
+**(Dont forget to extract the mod into your mods directory!)**
 
-- [X] Setup spotify application
-  - [X] Get auth token
-  - [X] Get access token
-- [X] Setup redirect page using local server
-- [ ] ~Create GUI for setup for easier access~
+## FAQ
 
-### Spotify API
+- Why is the RUI not showing up ingame?
+  - Either your spotify application is not open or its paused and you just loaded into a game  
+Launch or resume it and the RUI should pop right back up
 
----
+- Why is the song title / artist list cut off with "..."?
+  - If the song title or the entirety of the artists exceeds a certain character limit (20 by default), the rest gets cut off to not clutter the entire HUD  
+You can change this limit by modifying `MAX_SONG_TITLE_LENGTH` and `MAX_ARTIST_LENGTH` respectively in `spotirui.nut`
 
-- [X] Fetch new tokens on match load
-  - [X] Reauth if necessary using refresh token
-- [X] Periodically fetch song infos
-  - [X] Artists
-  - [X] Current song name
-  - [ ] ~Upcoming songs from the queue~
-  - [X] Progress into song  
-
-### Ingame
-
----
-
-- [X] Create a RUI display  
-    > Song name  
-      <sup>Artist 1, Artist 2, Artist 3...</sup>  
-      ||||||||||||||------------------ ▶⏸ 0:33 / 2:43  
-      Upcoming song name  
-      <sup>Upcoming song name 2</sup>
-
-- [ ] ~Dynamically colored song name~
-  - [ ] ~Base upon most prominent color(s) of the album cover art~
-  - [ ] ~Animated color fade~
+- Why does the RUI have some delay to it (when closing/opening the ingame menu or changing songs)
+  - This is due to the API taking some time fetching the current information which is why your spotify application is sometimes ahead of the actual displayed informations on the RUI  
+(The API call interval can be changed by modifying `UPDATE_RATE` in `spotirui.nut`)
