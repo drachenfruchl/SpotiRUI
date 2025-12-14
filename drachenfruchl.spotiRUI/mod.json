@@ -1,0 +1,37 @@
+{
+	"Name": "[sRUI] SpotiRUI",
+	"Description": "[@drachenfruchl]\nDisplays information about your current spotify activity via ingame RUI",
+	"LoadPriority": 69420,
+	"Version": "1.0.0",
+	"Scripts": [
+		{
+			"Path": "spotirui.nut",
+			"RunOn": "CLIENT && MP",
+            "ClientCallback": {
+				"Before": "spotirui_Init"
+			}
+		}
+	],
+	"ConVars": [
+		{
+			"Name": "SPOTIRUI_CLIENT_ID",
+			"DefaultValue": "",
+			"Flags": 16777216
+		},
+		{
+			"Name": "SPOTIRUI_CLIENT_SECRET",
+			"DefaultValue": "",
+			"Flags": 16777216
+		},
+		{
+			"Name": "SPOTIRUI_ACCESS_TOKEN",
+			"DefaultValue": "",
+			"Flags": 16777216
+		},
+		{
+			"Name": "SPOTIRUI_REFRESH_TOKEN",
+			"DefaultValue": "",
+			"Flags": 16777216
+		}
+	]
+}
