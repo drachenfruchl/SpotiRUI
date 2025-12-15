@@ -95,7 +95,7 @@ def get_authorization_code():
         'response_type': 'code',
         'redirect_uri': f'http://{REDIRECT_URI}:{REDIRECT_URI_PORT}',
         'show_dialog': 'true',
-        'scope': 'user-read-currently-playing user-read-playback-state'
+        'scope': 'user-read-playback-state'
     }
 
     req = requests.get( endpoint, params=params )
