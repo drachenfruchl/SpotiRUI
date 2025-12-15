@@ -12,43 +12,7 @@ import json
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib.parse import urlparse, parse_qs
 
-# def print_track_info(json):
-#     print(f"Progress into song: {json['progress_ms']}ms - {json['progress_ms']/1000}s")
-#     print(f"Duration: {json['item']['duration_ms']}ms - {json['item']['duration_ms']/1000}s")
-
-# def current_playing():
-#     endpoint = 'https://api.spotify.com/v1/me/player/currently-playing'
-
-#     headers = {
-#         'Authorization': ''
-#     }
-
-#     req = requests.get(endpoint, params={}, headers=headers)
-#     json = req.json()
-
-#     print(json)
-#     print_track_info(json)
-# current_playing()
-
-# def refresh_tokens():
-#     endpoint = 'https://accounts.spotify.com/api/token'
-
-#     headers = {
-#         'Authorization': '',
-#     }
-
-#     params = {
-#         'grant_type': 'refresh_token',
-#         'refresh_token': ''
-#     }
-
-#     req = requests.get(endpoint, params=params, headers=headers)
-
-
-
-
-
-
+# Main
 load_dotenv()
 
 REDIRECT_URI = '127.0.0.1'
@@ -194,80 +158,13 @@ def get_access_token():
     REFRESH_TOKEN = json['refresh_token']
 get_access_token()
 
-# def write_credentials_to_profile_cfg():
-#     #create_save_folder()
-    
-#     global CLIENT_ID
-#     global CLIENT_SECRET 
-#     global ACCESS_TOKEN
-#     global REFRESH_TOKEN
-
-#     has_id = False
-#     has_secret = False
-#     has_access_token = False
-#     has_refresh_token = False
-
-#     path_to_profile = f'C:/Users/{os.getlogin()}/Documents/Respawn/Titanfall2/profile/profile.cfg'
-
-#     while(True):
-#         try:
-#             with open(path_to_profile) as file:
-#                 previous_content = file.readlines()
-#             break
-#         except FileNotFoundError:
-#             print( f'profile.cfg in "{path_to_profile}" could not be found!\nEnter the filepath of your profile.cfg to retry: ')
-#             path_to_profile = input()
-
-#     for idx, entry in enumerate(previous_content):
-#         stripped = entry.strip()
-#         if stripped.startswith('SPOTIRUI_CLIENT_ID'):
-#             previous_content[idx] = f'SPOTIRUI_CLIENT_ID "{CLIENT_ID}"\n'
-#             has_id = True
-#             print('Updated SPOTIRUI_CLIENT_ID in profile.cfg')
-
-#         elif stripped.startswith('SPOTIRUI_CLIENT_SECRET'):
-#             previous_content[idx] = f'SPOTIRUI_CLIENT_SECRET "{CLIENT_SECRET}"\n'
-#             has_secret = True
-#             print('Updated SPOTIRUI_CLIENT_SECRET in profile.cfg')
-
-#         elif stripped.startswith('SPOTIRUI_ACCESS_TOKEN'):
-#             previous_content[idx] = f'SPOTIRUI_ACCESS_TOKEN "{ACCESS_TOKEN}"\n'
-#             has_access_token = True
-#             print('Updated SPOTIRUI_ACCESS_TOKEN in profile.cfg')
-
-#         elif stripped.startswith('SPOTIRUI_REFRESH_TOKEN'):
-#             previous_content[idx] = f'SPOTIRUI_REFRESH_TOKEN "{REFRESH_TOKEN}"\n'
-#             has_refresh_token = True
-#             print('Updated SPOTIRUI_REFRESH_TOKEN in profile.cfg')
-
-
-#     if not has_id:
-#         previous_content.append(f'SPOTIRUI_CLIENT_ID "{CLIENT_ID}"\n')
-#         print('Added SPOTIRUI_CLIENT_ID to profile.cfg')
-#     if not has_secret:
-#         previous_content.append(f'SPOTIRUI_CLIENT_SECRET "{CLIENT_SECRET}"\n')
-#         print('Added SPOTIRUI_CLIENT_SECRET to profile.cfg')
-#     if not has_access_token:
-#         previous_content.append(f'SPOTIRUI_ACCESS_TOKEN "{ACCESS_TOKEN}"\n')
-#         print('Added SPOTIRUI_ACCESS_TOKEN to profile.cfg')
-#     if not has_refresh_token:
-#         previous_content.append(f'SPOTIRUI_REFRESH_TOKEN "{REFRESH_TOKEN}"\n')
-#         print('Added SPOTIRUI_REFRESH_TOKEN to profile.cfg')
-    
-#     with open(path_to_profile, 'w' ) as file:
-#         file.writelines(previous_content)
-    
-#     print('Updated your profile.cfg - You can now start the game if you havent already done so')
-# write_credentials_to_profile_cfg()
-# input()
-
 def create_save_dir_and_write_credentials():
     global CLIENT_ID
     global CLIENT_SECRET 
     global ACCESS_TOKEN
     global REFRESH_TOKEN
 
-    file_path = 'C:/Program Files (x86)/Steam/steamapps/common/Titanfall2/R2Northstar/save_data'
+    file_path = input('Enter the full path to your modded directory (R2Northstar or R2Titanfall) save_data folder:')
     
     while(True):
         try:
@@ -296,20 +193,11 @@ def create_save_dir_and_write_credentials():
 
     with open('credentials.json', 'w') as file:
         file.write(json.dumps(dic))
-        # file.write(f'SPOTIRUI_CLIENT_ID={CLIENT_ID}\n')
+
         print('Added SPOTIRUI_CLIENT_ID to credentials.json')
-
-        # file.write(f'SPOTIRUI_CLIENT_SECRET={CLIENT_SECRET}\n')
         print('Added SPOTIRUI_CLIENT_SECRET to credentials.json')
-
-        # file.write(f'SPOTIRUI_ACCESS_TOKEN={ACCESS_TOKEN}\n')
         print('Added SPOTIRUI_ACCESS_TOKEN to credentials.json')
-
-        # file.write(f'SPOTIRUI_REFRESH_TOKEN={REFRESH_TOKEN}\n')
         print('Added SPOTIRUI_REFRESH_TOKEN to credentials.json')
-
-
-
-
+        
 create_save_dir_and_write_credentials()
 input("You may close this window now")

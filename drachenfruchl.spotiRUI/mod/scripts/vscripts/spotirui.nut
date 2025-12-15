@@ -1,11 +1,11 @@
 untyped
 global function spotirui_Init
 
-const CREDENTIALS_FILEPATH = "credentials.json"
-const MAX_SONG_TITLE_LENGTH = 20
-const MAX_ARTIST_LENGTH = 20
+const string CREDENTIALS_FILEPATH = "credentials.json"
+const int MAX_SONG_TITLE_LENGTH = 20
+const int MAX_ARTIST_LENGTH = 20
+const float UPDATE_RATE = 1.0
 
-float UPDATE_RATE = 1.0
 bool INGAMEMENU_OPEN = false
 string PREVID = ""
 
@@ -418,7 +418,7 @@ void function createSpotiRUI(){
         return
 
     RUI.exists = true
-    debugPrintKillfeed( "Created RUI" )
+    //debugPrintKillfeed( "Created RUI" )
 
     RUI.songName        = createSongNameRUI()
     RUI.artists         = createArtistRUI()
@@ -433,7 +433,7 @@ void function destroySpotiRUI(){
 
     RUI.exists = false
 
-    debugPrintKillfeed( "Destroyed RUI" )
+    //debugPrintKillfeed( "Destroyed RUI" )
 
     RuiDestroy( RUI.songName )
     RuiDestroy( RUI.artists )
