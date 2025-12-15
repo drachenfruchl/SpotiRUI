@@ -27,7 +27,7 @@
 		},
 		{
 			"Name": "SPOTIRUI_MAX_SONG_TITLE_LENGTH",
-			"DefaultValue": "20",
+			"DefaultValue": "30",
 			"Flags": 16777216
 		},
 		{
