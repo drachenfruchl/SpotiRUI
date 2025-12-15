@@ -24,8 +24,8 @@ Launch or resume it and the RUI should pop right back up
 
 - Why is the song title / artist list cut off with "..."?
   - If the song title or the entirety of the artists exceeds a certain character limit (20 by default), the rest gets cut off to not clutter the entire HUD  
-You can change this limit by modifying `MAX_SONG_TITLE_LENGTH` and `MAX_ARTIST_LENGTH` respectively in `spotirui.nut`
+(Limits can be changed respectively in the modsettings)
 
 - Why does the RUI have some delay to it (when closing/opening the ingame menu or changing songs)
   - This is due to the API taking some time fetching the current information which is why your spotify application is sometimes ahead of the actual displayed informations on the RUI  
-(The API call interval can be changed by modifying `UPDATE_RATE` in `spotirui.nut`)
+(API call interval can be changed in the modsettings)
