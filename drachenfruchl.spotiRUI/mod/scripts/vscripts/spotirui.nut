@@ -145,6 +145,74 @@ void function waitUntilAllThreadsFinished( array< void functionref() > threads )
         WaitFrame()
 }
 
+// taken from dtools
+string function sanitizeUTF8( string text ){
+    int i = 0
+    int textlen = text.len()
+    string result = ""
+
+    table< int, string> charReplacements = {
+        [ 182 ] = "oe",
+        [ 132 ] = "ae",
+        [ 156 ] = "ue",
+        [ 159 ] = "ss"
+    }
+
+    while( i < textlen ){
+        int charlength = byteSliceLength( text[i].tointeger() )
+        int charint = expect int( text[i].tointeger() )
+        string char = text.slice( i, i + charlength )
+
+        if( 
+            charlength == 1 && 
+            charint >= 32 && 
+            charint <= 126 
+        ){
+            result += char
+            i++
+            continue
+        } 
+        
+        if( i + charlength <= text.len() ){
+            if( charint >= 32 && charint <= 126 ){
+                result += char
+            } else {
+                array<int> charints = []
+                for( int j = 0; j < char.len(); j++ ){
+                    int b = expect int( char[j].tointeger() )
+                    if( b < 0 ) 
+                        b += 256
+                    charints.append(b)
+                }
+                if( 
+                    charints.len() == 2 && 
+                    charints[0] == 195 &&
+                    charints[1] in charReplacements
+                ){
+                    result += charReplacements[ charints[1] ]
+                } else {
+                    result += "?"
+                }
+            }
+                
+            i += charlength
+        }
+    }
+
+    return result
+}
+
+int function byteSliceLength( var byte ){
+	byte 			= byte < 0 ? byte + 256 : byte
+
+	int charLength 	= 1
+	if( 		byte >= 0xF0 ) charLength = 4
+	else if( 	byte >= 0xE0 ) charLength = 3
+	else if( 	byte >= 0xC0 ) charLength = 2
+
+	return charLength
+}
+
 void function spotirui_Init(){
     thread function(){
         if( !setInitialCredentials() ){
@@ -650,15 +718,15 @@ string function buildPlaybackStatusText( SONG songInfos ){
 
     string repeatState = ""
     if( songInfos.repeatState == "context" )
-        repeatState = "O"
+        repeatState = " O"
     else if( songInfos.repeatState == "track" )
-        repeatState = "O°"
+        repeatState = " O°"
     
     string shuffleState = ""
     if( songInfos.shuffleState )
-        shuffleState = "X"
+        shuffleState = " X"
     else if( songInfos.smartShuffle )
-        shuffleState = "X°"
+        shuffleState = " X°"
     
     string isPlaying = ""
     if( songInfos.isPlaying )
@@ -667,7 +735,7 @@ string function buildPlaybackStatusText( SONG songInfos ){
         isPlaying = "II"
 
     string result = format( 
-        "%s / %s - %s %s %s %s",
+        "%s / %s - %s %s%s%s",
         progress,
         duration,
         songInfos.volumePercent.tostring() + "%",
@@ -695,7 +763,7 @@ SONG function getSongInfos(){
 
         //SONG.album             = expect string( playbackState["item"]["album"]["name"] )
         songInfos.id             = expect string( playbackState["item"]["id"] )
-        songInfos.name           = expect string( playbackState["item"]["name"] )
+        songInfos.name           = sanitizeUTF8( expect string( playbackState["item"]["name"] ) )
         songInfos.volumePercent  = expect int( playbackState["device"]["volume_percent"] )
         songInfos.repeatState    = expect string( playbackState["repeat_state"] )
         songInfos.shuffleState   = expect bool( playbackState["shuffle_state"] )
@@ -706,7 +774,7 @@ SONG function getSongInfos(){
 
         array<string> artists = []
         foreach( table guy in playbackState["item"]["artists"] )
-            artists.append( expect string( guy["name"] ) )
+            artists.append( sanitizeUTF8( expect string( guy["name"] ) ) )
         songInfos.artists = artists
     }catch(e){
         debugPrint( "getSongInfos(): Could not successfully parse song infos" )
