@@ -63,7 +63,7 @@ void function updateCredentialConvars(){
     void functionref( string ) onSuccess = void function( string content ) : ( state ){
         if( content == "" ){
             debugPrint( "updateCredentialConvars(): " + CREDENTIALS_FILEPATH + " is empty! Make sure you run 'RUNME.bat' first and try again" )
-            debugPrintKillfeed( "updateCredentialConvars(): " + CREDENTIALS_FILEPATH + " is empty! Make sure you run 'RUNME.bat' first and try again" )
+            debugPrintKillfeed( CREDENTIALS_FILEPATH + " is empty! Make sure you run 'RUNME.bat' first and try again" )
             state.finished = true
             return
         }
@@ -202,6 +202,7 @@ string function sanitizeUTF8( string text ){
     return result
 }
 
+// taken from dtools
 int function byteSliceLength( var byte ){
 	byte 			= byte < 0 ? byte + 256 : byte
 
@@ -211,6 +212,18 @@ int function byteSliceLength( var byte ){
 	else if( 	byte >= 0xC0 ) charLength = 2
 
 	return charLength
+}
+
+// taken from dtools
+void function waitForValidGamestate( int gamestate, void functionref() fn_after ){
+    void functionref() ref = void function() : ( gamestate, fn_after )
+    {
+        while( GetMapName() == "mp_lobby" ) wait 1
+        while( GetGameState() < gamestate ) WaitFrame()
+        fn_after() 
+    }
+
+    thread ref()
 }
 
 void function spotirui_Init(){
@@ -225,7 +238,7 @@ void function spotirui_Init(){
         updateCredentialConvars()
         //printCredentials()
 
-        dtool_waitForValidGamestate( 4, monitorRUIVisibility )
+        waitForValidGamestate( 4, monitorRUIVisibility )
         debugPrint( "Initialized! :-)" )
         debugPrintKillfeed( "Initialized! :-)" )
     }()  
@@ -495,7 +508,6 @@ void function createSpotiRUI(){
         return
 
     RUI.exists = true
-    //debugPrintKillfeed( "Created RUI" )
 
     RUI.songName        = createSongNameRUI()
     RUI.artists         = createArtistRUI()
@@ -509,8 +521,6 @@ void function destroySpotiRUI(){
         return
 
     RUI.exists = false
-
-    //debugPrintKillfeed( "Destroyed RUI" )
 
     RuiDestroy( RUI.songName )
     RuiDestroy( RUI.artists )
