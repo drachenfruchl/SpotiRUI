@@ -3,7 +3,6 @@ import requests
 import webbrowser
 import base64
 import os
-from dotenv import load_dotenv
 import threading
 from time import sleep
 import json
@@ -13,8 +12,6 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib.parse import urlparse, parse_qs
 
 # Main
-load_dotenv()
-
 REDIRECT_URI = '127.0.0.1'
 REDIRECT_URI_PORT = 8080
 
@@ -84,13 +81,9 @@ def start_local_server():
     print(f'Starting server, listening on {REDIRECT_URI}:{REDIRECT_URI_PORT}')
     SERVER.serve_forever()
 
-CLIENT_ID = os.getenv('CLIENT_ID')
-if CLIENT_ID is None:
-    CLIENT_ID = input('CLIENT ID: ')
-
-CLIENT_SECRET = os.getenv('CLIENT_SECRET')
-if CLIENT_SECRET is None:
-    CLIENT_SECRET = input('CLIENT SECRET: ')
+print('Enter your spotify app...')
+CLIENT_ID = input('Client ID: ')
+CLIENT_SECRET = input('Client secret: ')
 
 threading.Thread(target=start_local_server).start()
 
@@ -119,8 +112,8 @@ while not has_received_authorization_code():
     sleep(0.1)
 
 if AUTHORIZATION_CODE == 'error':
-    print( 'Failed to get authorization code')
-    print( 'Server closed' )
+    print('Failed to get authorization code')
+    print('Server closed')
     SERVER.server_close()
     exit()
 
@@ -149,7 +142,7 @@ def get_access_token():
     req = requests.post(endpoint, params=params, headers=headers)
 
     if req.status_code != 200:
-        print( 'Failed to get access token')
+        print('Failed to get access token')
         SERVER.server_close()
         exit()
 
@@ -164,14 +157,14 @@ def create_save_dir_and_write_credentials():
     global ACCESS_TOKEN
     global REFRESH_TOKEN
 
-    file_path = input('Enter the full path to your modded directory (R2Northstar or R2Titanfall) save_data folder:')
+    file_path = input('Enter the full path to your modded directory (usually R2Northstar or R2Titanfall) save_data folder: ')
     
     while(True):
         try:
             os.chdir(file_path)
             break
         except FileNotFoundError:
-            print(f'Directory "{file_path}" not found!\nEnter the full path to your modded directory (R2Northstar or R2Titanfall) save_data folder to retry:')
+            print(f'Directory "{file_path}" not found!\nEnter the full path to your modded directory (usually R2Northstar or R2Titanfall) save_data folder to retry: ')
             file_path = input()
 
     if not os.path.exists(f'{file_path}/drachenfruchl.spotiRUI'):
@@ -182,7 +175,7 @@ def create_save_dir_and_write_credentials():
     os.chdir(file_path)
 
     if not os.path.exists(f'{file_path}/credentials.txt'):
-        print('Added file "credentials.json"')
+        print('Created credentials.json')
 
     dic = {
         "SPOTIRUI_CLIENT_ID": CLIENT_ID,
@@ -194,10 +187,11 @@ def create_save_dir_and_write_credentials():
     with open('credentials.json', 'w') as file:
         file.write(json.dumps(dic))
 
-        print('Added SPOTIRUI_CLIENT_ID to credentials.json')
-        print('Added SPOTIRUI_CLIENT_SECRET to credentials.json')
-        print('Added SPOTIRUI_ACCESS_TOKEN to credentials.json')
-        print('Added SPOTIRUI_REFRESH_TOKEN to credentials.json')
+        print('Added SPOTIRUI_CLIENT_ID to credentials')
+        print('Added SPOTIRUI_CLIENT_SECRET to credentials')
+        print('Added SPOTIRUI_ACCESS_TOKEN to credentials')
+        print('Added SPOTIRUI_REFRESH_TOKEN to credentials')
         
 create_save_dir_and_write_credentials()
-input("You may close this window now")
+print('You should now be ready to launch your game')
+print('You may close this window')
