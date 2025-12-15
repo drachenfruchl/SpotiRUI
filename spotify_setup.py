@@ -81,7 +81,7 @@ def start_local_server():
     print(f'Starting server, listening on {REDIRECT_URI}:{REDIRECT_URI_PORT}')
     SERVER.serve_forever()
 
-print('Enter your spotify app...')
+print('Get these values from the dashboard of your spotify app')
 CLIENT_ID = input('Client ID: ')
 CLIENT_SECRET = input('Client secret: ')
 
