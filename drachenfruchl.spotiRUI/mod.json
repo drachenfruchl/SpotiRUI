@@ -1,6 +1,6 @@
 {
 	"Name": "[sRUI] SpotiRUI",
-	"Description": "[@drachenfruchl]\nDisplays information about your current spotify activity via ingame RUI",
+	"Description": "[@drachenfruchl]\n\nDisplays information about your current spotify activity via ingame RUI",
 	"LoadPriority": 69420,
 	"Version": "1.0.0",
 	"Scripts": [
@@ -10,9 +10,31 @@
             "ClientCallback": {
 				"Before": "spotirui_Init"
 			}
+		},
+		{
+			"Path": "spotiruiSettings.nut",
+			"RunOn": "UI",
+			"UICallback": {
+				"Before": "spotiruiSettings_Init"
+			}
 		}
 	],
 	"ConVars": [
+		{
+			"Name": "SPOTIRUI_UPDATE_RATE",
+			"DefaultValue": "1.0",
+			"Flags": 16777216
+		},
+		{
+			"Name": "SPOTIRUI_MAX_SONG_TITLE_LENGTH",
+			"DefaultValue": "20",
+			"Flags": 16777216
+		},
+		{
+			"Name": "SPOTIRUI_MAX_ARTIST_LENGTH",
+			"DefaultValue": "20",
+			"Flags": 16777216
+		},
 		{
 			"Name": "SPOTIRUI_CLIENT_ID",
 			"DefaultValue": "",

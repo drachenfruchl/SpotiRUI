@@ -2,8 +2,9 @@ untyped
 global function spotirui_Init
 
 const string CREDENTIALS_FILEPATH = "credentials.json"
-const int MAX_SONG_TITLE_LENGTH = 20
-const int MAX_ARTIST_LENGTH = 20
+
+int MAX_SONG_TITLE_LENGTH = 20
+int MAX_ARTIST_LENGTH = 20
 float UPDATE_RATE = 1.0
 
 bool INGAMEMENU_OPEN = false
@@ -152,6 +153,7 @@ void function spotirui_Init(){
             return
         }
 
+        setConfigConvars()
         updateCredentialConvars()
         //printCredentials()
 
@@ -159,6 +161,12 @@ void function spotirui_Init(){
         debugPrint( "Initialized! :-)" )
         debugPrintKillfeed( "Initialized! :-)" )
     }()  
+}
+
+void function setConfigConvars(){
+    MAX_ARTIST_LENGTH = GetConVarInt( "SPOTIRUI_MAX_ARTIST_LENGTH" )
+    MAX_SONG_TITLE_LENGTH = GetConVarInt( "SPOTIRUI_MAX_SONG_TITLE_LENGTH" )
+    UPDATE_RATE = GetConVarFloat( "SPOTIRUI_UPDATE_RATE" )
 }
 
 bool function setInitialCredentials(){
