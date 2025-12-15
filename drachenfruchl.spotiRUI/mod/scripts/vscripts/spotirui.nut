@@ -572,14 +572,7 @@ void function keepUpdatingRUI(){
         if( PREVID != songInfos.id ){
             animateTransition( songInfos )
         } else {
-            string artists = ""
-            foreach( artist in songInfos.artists )
-                artists += artist + ", "
-
-            if( songInfos.artists.len() > 0 )
-                artists = artists.slice( 0, -2 )
-
-            artists = shortenArtists( artists )
+            string artists = shortenArtists( songInfos.artists )
             songInfos.name = shortenSongName( songInfos.name )
 
             RuiSetString( RUI.artists, "msgText", artists )
@@ -592,14 +585,7 @@ void function keepUpdatingRUI(){
 }
 
 void function animateTransition( SONG songInfos ){
-    string artists = ""
-    foreach( artist in songInfos.artists )
-        artists += artist + ", "
-
-    if( songInfos.artists.len() > 0 )
-        artists = artists.slice( 0, -2 )
-    
-    artists = shortenArtists( artists )
+    string artists = shortenArtists( songInfos.artists )
     songInfos.name = shortenSongName( songInfos.name )
 
     array< void functionref() > threads = [
@@ -610,8 +596,8 @@ void function animateTransition( SONG songInfos ){
         //void function() : ( songInfos ) { animateTransitionElement( RUI.upcomingSong, "@drachenfruchl" ) },  
     ]
 
-    debugPrint( "NOW PLAYING: " + songInfos.name + " - " + artists )
-    debugPrintKillfeed( "NOW PLAYING: " + songInfos.name + " - " + artists )
+    debugPrint( "NOW PLAYING: " + songInfos.name + " by " + artists )
+    debugPrintKillfeed( "NOW PLAYING: " + songInfos.name + " by " + artists )
 	waitUntilAllThreadsFinished( threads )
 }
 
@@ -651,35 +637,27 @@ string function shortenSongName( string title ){
     return title.slice( 0, lastSpaceIndex ) + "..."
 }
 
-string function shortenArtists( string artists ){
-    int maxLen = MAX_ARTIST_LENGTH
+string function shortenArtists( array<string> artists ){
+    string result = ""
+    int includedArtists = 0
 
-    if( artists.len() <= maxLen )
-        return artists
+    foreach( artist in artists ){
+        string addition = ( includedArtists > 0 ? ", " : "" ) + artist
 
-    int lastCommaIndex = -1
-    int lastSpaceIndex = -1
+        if( result.len() + addition.len() > MAX_ARTIST_LENGTH ){
+            int remaining = artists.len() - includedArtists
+            if( remaining > 0 )
+                result += format( " + %d more", remaining )
+            return result
+        }
 
-    for( int i = 0; i < maxLen; i++ ){
-        string char = artists.slice( i, i+1 )
-
-        if( char == "," )
-            lastCommaIndex = i
-        else if( char == " " )
-            lastSpaceIndex = i
+        result += addition
+        includedArtists++
     }
 
-    int cutIndex = -1
-
-    if( lastCommaIndex != -1 )
-        cutIndex = lastCommaIndex
-    else if( lastSpaceIndex != -1 )
-        cutIndex = lastSpaceIndex
-    else
-        cutIndex = maxLen
-
-    return artists.slice( 0, cutIndex ) + "..."
+    return result
 }
+
 
 string function buildProgressBar( SONG songInfos ){
     if( songInfos.durationMS <= 0 )
