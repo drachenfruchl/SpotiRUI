@@ -4,7 +4,7 @@ global function spotirui_Init
 const string CREDENTIALS_FILEPATH = "credentials.json"
 const int MAX_SONG_TITLE_LENGTH = 20
 const int MAX_ARTIST_LENGTH = 20
-const float UPDATE_RATE = 1.0
+float UPDATE_RATE = 1.0
 
 bool INGAMEMENU_OPEN = false
 string PREVID = ""
@@ -224,6 +224,7 @@ table ornull function getPlaybackState(){
         if( response.statusCode == 429 ){
             debugPrint( "getPlaybackState(): " + "Youre exceeding API rate limits" )
             debugPrintKillfeed( "Exceeding API rate limits!" )
+            UPDATE_RATE = 1.0
             state.finished  = true
             state.response  = null
             return 
