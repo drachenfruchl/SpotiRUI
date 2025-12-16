@@ -166,6 +166,9 @@ def create_save_dir_and_write_credentials():
         except FileNotFoundError:
             print(f'Directory "{file_path}" not found!\nEnter the full path to your modded directory (usually R2Northstar or R2Titanfall) save_data folder to retry: ')
             file_path = input()
+        except OSError:
+            print(f'Error!!\nEnter the full path to your modded directory (usually R2Northstar or R2Titanfall) save_data folder to retry: ')
+            file_path = input()
 
     if not os.path.exists(f'{file_path}/drachenfruchl.spotiRUI'):
         print('Added directory "drachenfruchl.spotiRUI"')
