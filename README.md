@@ -7,6 +7,8 @@ Displays information about your current played spotify song via an ingame RUI el
 ## Setup
 
 - Create an app on *https://developer.spotify.com/dashboard*
+- Name and description can be anything
+- Set `Redirect URI` to `http://127.0.0.1:8080`
 - Run 'RUNME.bat'
 - Enter your `Client ID` and `Client secret`, which you receive from the dashboard of your recently created app
 - Authorize the app (You might have to login to your account first)
