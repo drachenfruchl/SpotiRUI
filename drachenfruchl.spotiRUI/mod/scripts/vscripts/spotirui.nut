@@ -63,7 +63,7 @@ void function updateCredentialConvars(){
     void functionref( string ) onSuccess = void function( string content ) : ( state ){
         if( content == "" ){
             debugPrint( "updateCredentialConvars(): " + CREDENTIALS_FILEPATH + " is empty! Make sure you run 'RUNME.bat' first and try again" )
-            debugPrintKillfeed( CREDENTIALS_FILEPATH + " is empty! Make sure you run 'RUNME.bat' first and try again" )
+            debugPrintKillfeed( "updateCredentialConvars(): " + CREDENTIALS_FILEPATH + " is empty! Make sure you run 'RUNME.bat' first and try again" )
             state.finished = true
             return
         }
@@ -202,7 +202,6 @@ string function sanitizeUTF8( string text ){
     return result
 }
 
-// taken from dtools
 int function byteSliceLength( var byte ){
 	byte 			= byte < 0 ? byte + 256 : byte
 
@@ -212,18 +211,6 @@ int function byteSliceLength( var byte ){
 	else if( 	byte >= 0xC0 ) charLength = 2
 
 	return charLength
-}
-
-// taken from dtools
-void function waitForValidGamestate( int gamestate, void functionref() fn_after ){
-    void functionref() ref = void function() : ( gamestate, fn_after )
-    {
-        while( GetMapName() == "mp_lobby" ) wait 1
-        while( GetGameState() < gamestate ) WaitFrame()
-        fn_after() 
-    }
-
-    thread ref()
 }
 
 void function spotirui_Init(){
@@ -238,7 +225,7 @@ void function spotirui_Init(){
         updateCredentialConvars()
         //printCredentials()
 
-        waitForValidGamestate( 4, monitorRUIVisibility )
+        dtool_waitForValidGamestate( 4, monitorRUIVisibility )
         debugPrint( "Initialized! :-)" )
         debugPrintKillfeed( "Initialized! :-)" )
     }()  
@@ -504,11 +491,6 @@ var function createUpcomingSongRUI(){
 }
 
 void function createSpotiRUI(){
-    if( RUI.exists )
-        return
-
-    RUI.exists = true
-
     RUI.songName        = createSongNameRUI()
     RUI.artists         = createArtistRUI()
     RUI.progressBar     = createProgressBarRUI()
@@ -516,35 +498,43 @@ void function createSpotiRUI(){
     RUI.upcomingSong    = createUpcomingSongRUI()
 }
 
-void function destroySpotiRUI(){
+void function showSpotiRUI(){
+    if( RUI.exists )
+        return
+
+    RUI.exists = true
+
+    RuiSetFloat( RUI.songName, "msgAlpha", 1.0 )
+    RuiSetFloat( RUI.artists, "msgAlpha", 1.0 )
+    RuiSetFloat( RUI.progressBar, "msgAlpha", 1.0 )
+    RuiSetFloat( RUI.playbackStatus, "msgAlpha", 1.0 )
+    RuiSetFloat( RUI.upcomingSong, "msgAlpha", 1.0 )
+}
+
+void function hideSpotiRUI(){
     if( !RUI.exists )
         return
 
     RUI.exists = false
 
-    RuiDestroy( RUI.songName )
-    RuiDestroy( RUI.artists )
-    RuiDestroy( RUI.progressBar )
-    RuiDestroy( RUI.playbackStatus )
-    RuiDestroy( RUI.upcomingSong )
-
-    RUI.songName        = null
-    RUI.artists         = null
-    RUI.progressBar     = null
-    RUI.playbackStatus  = null
-    RUI.upcomingSong    = null 
+    RuiSetFloat( RUI.songName, "msgAlpha", 0.0 )
+    RuiSetFloat( RUI.artists, "msgAlpha", 0.0 )
+    RuiSetFloat( RUI.progressBar, "msgAlpha", 0.0 )
+    RuiSetFloat( RUI.playbackStatus, "msgAlpha", 0.0 )
+    RuiSetFloat( RUI.upcomingSong, "msgAlpha", 0.0 )
 }
 
 void function monitorRUIVisibility(){
+    createSpotiRUI()
     thread keepUpdatingRUI()
 
     for(;;){
         bool menuOpen = clGlobal.isMenuOpen
 
         if( menuOpen && RUI.exists )
-            destroySpotiRUI()
+            hideSpotiRUI()
         else if( !menuOpen && !RUI.exists && RUI.isVisible )
-            createSpotiRUI()
+            showSpotiRUI()
         
         wait 0.1
     }
